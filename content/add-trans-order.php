@@ -35,8 +35,20 @@ if (isset($_POST['edit'])) {
     }
 }
 
-$queryCat = mysqli_query($connect, "SELECT * FROM levels");
-$rowCat = mysqli_fetch_all($queryCat, MYSQLI_ASSOC);
+$queryCustomers = mysqli_query($connect, "SELECT * FROM customers ORDER BY id DESC");
+$rowCustomers = mysqli_fetch_all($queryCustomers, MYSQLI_ASSOC);
+
+$queryServices = mysqli_query($connect, "SELECT * FROM services ORDER BY id DESC");
+$rowServices = mysqli_fetch_all($queryServices, MYSQLI_ASSOC);
+
+// TR (Transaksi)
+// TR032125L001
+$queryTrans = mysqli_query($connect, "SELECT max(id) as id_trans FROM trans_order");
+$rowTrans = mysqli_fetch_assoc($queryTrans);
+$id_trans = $rowTrans['id_trans'];
+$id_trans++;
+
+$trans_code = "TRL" . date('mdy') . sprintf("%03s", $id_trans);
 
 
 ?>
@@ -45,10 +57,11 @@ $rowCat = mysqli_fetch_all($queryCat, MYSQLI_ASSOC);
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h3><?= isset($_GET['edit']) ? 'Edit' : 'Create New' ?> Trans Order</h3>
+                <h3><?= isset($_GET['edit']) ? 'Edit' : 'Create New' ?> TransOrder</h3>
             </div>
             <div class="card-body mt-3">
                 <form action="" method="post">
+                    <input type="hidden" id="service_price">
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="mb-3 row">
@@ -56,7 +69,7 @@ $rowCat = mysqli_fetch_all($queryCat, MYSQLI_ASSOC);
                                     <label for="">Transaction Code</label>
                                 </div>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control" name="trans-code" readonly>
+                                    <input type="text" class="form-control" name="trans-code" readonly value="<?= $trans_code ?>">
                                 </div>
                             </div>
                             <div class="mb-3 row">
@@ -67,7 +80,23 @@ $rowCat = mysqli_fetch_all($queryCat, MYSQLI_ASSOC);
                                     <input type="date" class="form-control" name="order_date">
                                 </div>
                             </div>
+                            <div class="mb-3 row">
+                                <div class="col-sm-3">
+                                    <label for="">Service</label>
+                                </div>
+                                <div class="col-sm-5">
+                                    <select name="" id="id_service" class="form-control">
+                                        <option value="">Choose Services</option>
+                                        <?php foreach ($rowServices as $rowService) : ?>
+                                            <option value="<?= $rowService['id'] ?>"><?= $rowService['service_name'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
+
+
+
                         <div class="col-sm-6">
                             <div class="mb-3 row">
                                 <div class="col-sm-3">
@@ -76,7 +105,9 @@ $rowCat = mysqli_fetch_all($queryCat, MYSQLI_ASSOC);
                                 <div class="col-sm-5">
                                     <select name="id_customer" id="" class="form-control">
                                         <option value="">Choose Customer</option>
-                                        <option value=""></option>
+                                        <?php foreach ($rowCustomers as $rowCustomer) : ?>
+                                            <option value="<?= $rowCustomer['id'] ?>"><?= $rowCustomer['cust_name'] ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                             </div>
@@ -98,12 +129,15 @@ $rowCat = mysqli_fetch_all($queryCat, MYSQLI_ASSOC);
                                     <thead>
                                         <tr>
                                             <th>Service</th>
+                                            <th>Price</th>
                                             <th>Quantity</th>
                                             <th>Notes</th>
-                                            <th></th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody></tbody>
+                                    <tbody>
+
+                                    </tbody>
                                 </table>
                             </div>
                         </div>

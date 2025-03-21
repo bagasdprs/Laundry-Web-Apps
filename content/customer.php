@@ -22,14 +22,14 @@ if (isset($_GET['delete'])) {
                 <div align="right" class="mt-3 mb-3">
                     <a href="?page=add-customer" class="btn btn-primary">Create New Customer</a>
                 </div>
-                <table class="table table-bordered">
+                <table class="table table-bordered text-center">
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>Nama</th>
                             <th>Telp</th>
                             <th>Alamat</th>
-                            <th></th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
